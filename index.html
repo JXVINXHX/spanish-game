@@ -81,7 +81,7 @@ let score=0
 let level=0
 let questionIndex=0
 let correctAnswer
-let waiting=false
+let answered=false
 
 const question=document.getElementById("question")
 const scoreText=document.getElementById("score")
@@ -163,10 +163,10 @@ let options=[correct]
 
 while(options.length<4){
 
-let randomLevel=levels[Math.floor(Math.random()*levels.length)]
-let random=randomLevel[Math.floor(Math.random()*randomLevel.length)][1]
+let l=levels[Math.floor(Math.random()*levels.length)]
+let r=l[Math.floor(Math.random()*l.length)][1]
 
-if(!options.includes(random)) options.push(random)
+if(!options.includes(r)) options.push(r)
 
 }
 
@@ -175,6 +175,8 @@ return options.sort(()=>Math.random()-0.5)
 }
 
 function newQuestion(){
+
+answered=false
 
 if(lives<=0){
 question.innerHTML="Game Over<br>Score: "+score
@@ -192,9 +194,8 @@ return
 }
 
 levelText.innerText="Level "+(level+1)
-}
 
-waiting=false
+}
 
 let q=levels[level][questionIndex]
 
@@ -216,8 +217,8 @@ buttons.forEach(b=>{
 
 b.onclick=()=>{
 
-if(waiting) return
-waiting=true
+if(answered) return
+answered=true
 
 if(b.innerText===correctAnswer){
 
@@ -232,6 +233,7 @@ b.classList.add("wrong")
 
 document.getElementById("stats").innerHTML=
 "Lives: "+"❤️".repeat(lives)+" | Score: "+score
+
 }
 
 buttons.forEach(x=>x.disabled=true)
