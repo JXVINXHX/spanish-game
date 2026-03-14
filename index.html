@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Aprende Español 🔥</title>
+
+<style>
+body{
+font-family:Arial,Helvetica,sans-serif;
+background:linear-gradient(135deg,#1e2a44,#243b55);
+color:white;
+text-align:center;
+padding:40px;
+}
+
+h1{
+font-size:40px;
+}
+
+#pregunta{
+font-size:30px;
+margin:30px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+max-width:500px;
+margin:auto;
+}
+
+button{
+padding:15px;
+font-size:18px;
+border:none;
+border-radius:10px;
+background:#4e73df;
+color:white;
+cursor:pointer;
+}
+
+button:hover{
+background:#2e59d9;
+}
+
+#stats{
+margin:20px;
+font-size:20px;
+}
+
+#next{
+margin-top:20px;
+background:#1cc88a;
+}
+
+.correct{
+background:#1cc88a !important;
+}
+
+.wrong{
+background:#e74a3b !important;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Aprende Español 🇪🇸</h1>
+
+<div id="stats">
+Vidas: ❤️❤️❤️❤️❤️ | Puntos: <span id="score">0</span>
+</div>
+
+<div id="pregunta">Pulsa empezar</div>
+
+<div class="grid">
+<button class="opcion"></button>
+<button class="opcion"></button>
+<button class="opcion"></button>
+<button class="opcion"></button>
+</div>
+
+<br>
+<button id="next">Empezar</button>
+
+<script>
+
+const preguntas = [
+{q:"¡Qué fuerte!",a:"That's crazy!",o:["That's boring","That's slow","That's weak"]},
+{q:"Flipar",a:"To be amazed",o:["To run","To cry","To fall"]},
+{q:"Molar",a:"To be cool",o:["To smell bad","To hurt","To cry"]},
+{q:"Ser un crack",a:"To be awesome",o:["To break","To lose","To fail"]},
+{q:"Ir a tope",a:"Full speed",o:["Very slow","Stop","Sleep"]},
+{q:"Pasar de algo",a:"Not care about something",o:["Buy something","Run away","Eat"]},
+{q:"Qué pasada",a:"That's amazing",o:["That's old","That's bad","That's small"]},
+{q:"Me parto",a:"I'm dying of laughter",o:["I'm leaving","I'm eating","I'm tired"]}
+]
+
+let vidas=5
+let score=0
+let actual
+let correcta
+
+const pregunta=document.getElementById("pregunta")
+const botones=document.querySelectorAll(".opcion")
+const scoreTxt=document.getElementById("score")
+const next=document.getElementById("next")
+
+function nuevaPregunta(){
+
+if(vidas<=0){
+pregunta.innerHTML="GAME OVER<br>Puntos: "+score
+return
+}
+
+actual= preguntas[Math.floor(Math.random()*preguntas.length)]
+
+pregunta.innerHTML="¿Qué significa?<br><b>"+actual.q+"</b>"
+
+let opciones=[actual.a,...actual.o]
+
+opciones.sort(()=>Math.random()-0.5)
+
+correcta=actual.a
+
+botones.forEach((b,i)=>{
+b.innerText=opciones[i]
+b.classList.remove("correct","wrong")
+b.disabled=false
+})
+
+}
+
+botones.forEach(b=>{
+b.onclick=()=>{
+
+if(b.innerText===correcta){
+
+score+=20
+scoreTxt.innerText=score
+b.classList.add("correct")
+
+alert("¡Muy bien crack! 🔥")
+
+}else{
+
+vidas--
+b.classList.add("wrong")
+
+document.getElementById("stats").innerHTML=
+"Vidas: "+"❤️".repeat(vidas)+" | Puntos: "+score
+
+alert("Fallaste 😅\nCorrecta: "+correcta)
+
+}
+
+botones.forEach(x=>x.disabled=true)
+
+}
+})
+
+next.onclick=nuevaPregunta
+
+</script>
+
+</body>
+</html>
