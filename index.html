@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Aprende Español 🔥</title>
+<title>Learn Spanish Game</title>
 
 <style>
+
 body{
-font-family:Arial,Helvetica,sans-serif;
+font-family:Arial;
 background:linear-gradient(135deg,#1e2a44,#243b55);
 color:white;
 text-align:center;
@@ -17,7 +18,17 @@ h1{
 font-size:40px;
 }
 
-#pregunta{
+#level{
+font-size:22px;
+margin:10px;
+}
+
+#stats{
+font-size:20px;
+margin:10px;
+}
+
+#question{
 font-size:30px;
 margin:30px;
 }
@@ -26,7 +37,7 @@ margin:30px;
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:15px;
-max-width:500px;
+max-width:520px;
 margin:auto;
 }
 
@@ -44,14 +55,10 @@ button:hover{
 background:#2e59d9;
 }
 
-#stats{
-margin:20px;
-font-size:20px;
-}
-
 #next{
-margin-top:20px;
+margin-top:25px;
 background:#1cc88a;
+font-size:20px;
 }
 
 .correct{
@@ -61,106 +68,246 @@ background:#1cc88a !important;
 .wrong{
 background:#e74a3b !important;
 }
+
 </style>
 </head>
 
 <body>
 
-<h1>Aprende Español 🇪🇸</h1>
+<h1>Learn Spanish</h1>
+
+<div id="level">Level 1</div>
 
 <div id="stats">
-Vidas: ❤️❤️❤️❤️❤️ | Puntos: <span id="score">0</span>
+Lives: ❤️❤️❤️❤️❤️ | Score: <span id="score">0</span>
 </div>
 
-<div id="pregunta">Pulsa empezar</div>
+<div id="question">Loading...</div>
 
 <div class="grid">
-<button class="opcion"></button>
-<button class="opcion"></button>
-<button class="opcion"></button>
-<button class="opcion"></button>
+<button class="option"></button>
+<button class="option"></button>
+<button class="option"></button>
+<button class="option"></button>
 </div>
 
 <br>
-<button id="next">Empezar</button>
+<button id="next">Start</button>
 
 <script>
 
-const preguntas = [
-{q:"¡Qué fuerte!",a:"That's crazy!",o:["That's boring","That's slow","That's weak"]},
-{q:"Flipar",a:"To be amazed",o:["To run","To cry","To fall"]},
-{q:"Molar",a:"To be cool",o:["To smell bad","To hurt","To cry"]},
-{q:"Ser un crack",a:"To be awesome",o:["To break","To lose","To fail"]},
-{q:"Ir a tope",a:"Full speed",o:["Very slow","Stop","Sleep"]},
-{q:"Pasar de algo",a:"Not care about something",o:["Buy something","Run away","Eat"]},
-{q:"Qué pasada",a:"That's amazing",o:["That's old","That's bad","That's small"]},
-{q:"Me parto",a:"I'm dying of laughter",o:["I'm leaving","I'm eating","I'm tired"]}
+let lives=5
+let score=0
+let level=1
+let correctAnswer
+let waitingNext=false
+
+const scoreText=document.getElementById("score")
+const question=document.getElementById("question")
+const levelText=document.getElementById("level")
+const buttons=document.querySelectorAll(".option")
+const nextBtn=document.getElementById("next")
+
+const levels=[
+
+[
+["Hola","Hello"],
+["Adiós","Goodbye"],
+["Gracias","Thank you"],
+["Agua","Water"],
+["Comida","Food"],
+["Casa","House"],
+["Perro","Dog"],
+["Gato","Cat"],
+["Libro","Book"],
+["Amigo","Friend"],
+["Escuela","School"],
+["Ciudad","City"],
+["Familia","Family"],
+["Trabajo","Work"],
+["Calle","Street"],
+["Puerta","Door"],
+["Ventana","Window"],
+["Mesa","Table"],
+["Silla","Chair"],
+["Tiempo","Time"]
+],
+
+[
+["Buenos días","Good morning"],
+["Buenas noches","Good night"],
+["¿Cómo estás?","How are you"],
+["Tengo hambre","I'm hungry"],
+["Tengo sueño","I'm sleepy"],
+["Tengo frío","I'm cold"],
+["Tengo calor","I'm hot"],
+["Hasta luego","See you later"],
+["¿Cuánto cuesta?","How much is it"],
+["¿Dónde está el baño?","Where is the bathroom"],
+["Estoy cansado","I'm tired"],
+["Estoy feliz","I'm happy"],
+["Estoy triste","I'm sad"],
+["Estoy perdido","I'm lost"],
+["Necesito ayuda","I need help"],
+["Vamos","Let's go"],
+["Es fácil","It's easy"],
+["Es difícil","It's difficult"],
+["Muy bien","Very good"],
+["Claro","Of course"]
+],
+
+[
+["Aprender","To learn"],
+["Enseñar","To teach"],
+["Comprender","To understand"],
+["Recordar","To remember"],
+["Olvidar","To forget"],
+["Intentar","To try"],
+["Lograr","To achieve"],
+["Mejorar","To improve"],
+["Aumentar","To increase"],
+["Reducir","To reduce"],
+["Explicar","To explain"],
+["Descubrir","To discover"],
+["Construir","To build"],
+["Desarrollar","To develop"],
+["Elegir","To choose"],
+["Crear","To create"],
+["Cambiar","To change"],
+["Resolver","To solve"],
+["Avanzar","To advance"],
+["Proteger","To protect"]
+],
+
+[
+["Conocimiento","Knowledge"],
+["Desafío","Challenge"],
+["Experiencia","Experience"],
+["Responsabilidad","Responsibility"],
+["Compromiso","Commitment"],
+["Capacidad","Ability"],
+["Oportunidad","Opportunity"],
+["Importancia","Importance"],
+["Dificultad","Difficulty"],
+["Libertad","Freedom"],
+["Confianza","Trust"],
+["Sabiduría","Wisdom"],
+["Paciencia","Patience"],
+["Esfuerzo","Effort"],
+["Éxito","Success"],
+["Fracaso","Failure"],
+["Realidad","Reality"],
+["Verdad","Truth"],
+["Mentira","Lie"],
+["Justicia","Justice"]
+],
+
+[
+["Extraordinario","Extraordinary"],
+["Impresionante","Impressive"],
+["Increíble","Incredible"],
+["Sobresaliente","Outstanding"],
+["Magnífico","Magnificent"],
+["Espectacular","Spectacular"],
+["Fundamental","Fundamental"],
+["Esencial","Essential"],
+["Complejidad","Complexity"],
+["Independencia","Independence"],
+["Creatividad","Creativity"],
+["Determinación","Determination"],
+["Perseverancia","Perseverance"],
+["Disciplina","Discipline"],
+["Innovación","Innovation"],
+["Transformación","Transformation"],
+["Productividad","Productivity"],
+["Eficiencia","Efficiency"],
+["Competencia","Competition"],
+["Contribución","Contribution"]
 ]
 
-let vidas=5
-let score=0
-let actual
-let correcta
+]
 
-const pregunta=document.getElementById("pregunta")
-const botones=document.querySelectorAll(".opcion")
-const scoreTxt=document.getElementById("score")
-const next=document.getElementById("next")
+function getRandomOptions(correct){
 
-function nuevaPregunta(){
+let options=[correct]
 
-if(vidas<=0){
-pregunta.innerHTML="GAME OVER<br>Puntos: "+score
-return
+while(options.length<4){
+
+let randomLevel=levels[Math.floor(Math.random()*levels.length)]
+
+let random=randomLevel[Math.floor(Math.random()*randomLevel.length)][1]
+
+if(!options.includes(random)) options.push(random)
+
 }
 
-actual= preguntas[Math.floor(Math.random()*preguntas.length)]
+return options.sort(()=>Math.random()-0.5)
 
-pregunta.innerHTML="¿Qué significa?<br><b>"+actual.q+"</b>"
+}
 
-let opciones=[actual.a,...actual.o]
+function newQuestion(){
 
-opciones.sort(()=>Math.random()-0.5)
+waitingNext=false
+nextBtn.innerText="Waiting answer..."
 
-correcta=actual.a
+let set=levels[level-1]
 
-botones.forEach((b,i)=>{
-b.innerText=opciones[i]
+let random=set[Math.floor(Math.random()*set.length)]
+
+question.innerHTML="What does this mean?<br><b>"+random[0]+"</b>"
+
+correctAnswer=random[1]
+
+let options=getRandomOptions(correctAnswer)
+
+buttons.forEach((b,i)=>{
+b.innerText=options[i]
 b.classList.remove("correct","wrong")
 b.disabled=false
 })
 
 }
 
-botones.forEach(b=>{
+buttons.forEach(b=>{
+
 b.onclick=()=>{
 
-if(b.innerText===correcta){
+if(waitingNext) return
 
-score+=20
-scoreTxt.innerText=score
+waitingNext=true
+
+if(b.innerText===correctAnswer){
+
+score+=10
+scoreText.innerText=score
 b.classList.add("correct")
-
-alert("¡Muy bien crack! 🔥")
 
 }else{
 
-vidas--
+lives--
 b.classList.add("wrong")
 
 document.getElementById("stats").innerHTML=
-"Vidas: "+"❤️".repeat(vidas)+" | Puntos: "+score
-
-alert("Fallaste 😅\nCorrecta: "+correcta)
+"Lives: "+"❤️".repeat(lives)+" | Score: "+score
 
 }
 
-botones.forEach(x=>x.disabled=true)
+buttons.forEach(x=>x.disabled=true)
+
+nextBtn.innerText="Continue"
+
+if(score%100===0 && level<5){
+level++
+levelText.innerText="Level "+level
+}
 
 }
+
 })
 
-next.onclick=nuevaPregunta
+nextBtn.onclick=newQuestion
+
+newQuestion()
 
 </script>
 
